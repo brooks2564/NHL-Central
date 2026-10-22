@@ -66,7 +66,7 @@ Needs Pebble SDK 4.33 or newer.
 
 That builds the app, installs it in the emulator and opens it. (`pebble install --emulator` on its own installs the app but doesn't open it.)
 
-Or [open it in CloudPebble](https://cloudpebble.repebble.com/ide/import/github/brooks2564/NHL-Live-Scores-APP).
+Or [open it in CloudPebble](https://cloudpebble.repebble.com/ide/import/github/brooks2564/NHL-Central).
 
 Scores come from the NHL's free public API, so there's no account or key to set up.
 
