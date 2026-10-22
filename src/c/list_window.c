@@ -47,6 +47,33 @@ struct ListWindow {
 
 #define F(c) table_get(lw->table, row, (c))
 
+// Side padding of the cell being drawn. On round watches the circle cuts into
+// rows near the top and bottom, so those rows get more padding to stay visible.
+static int s_pad = ROUND_PAD;
+
+#ifdef PBL_ROUND
+static int isqrt(int n) {
+  int r = 0;
+  while ((r + 1) * (r + 1) <= n) r++;
+  return r;
+}
+#endif
+
+static int cell_pad(const Layer *cell, GRect b) {
+#ifdef PBL_ROUND
+  const int r = PBL_DISPLAY_WIDTH / 2;
+  int top = layer_convert_point_to_screen(cell, GPointZero).y;
+  // Distance from the screen's middle to where the text sits: the cell's
+  // middle plus most of the way to its outer edge.
+  int far = abs(top + b.size.h / 2 - r) + b.size.h * 3 / 10;
+  if (far >= r) far = r - 1;
+  int inset = r - isqrt(r * r - far * far) + 6;
+  return inset > ROUND_PAD ? inset : ROUND_PAD;
+#else
+  return ROUND_PAD;
+#endif
+}
+
 static GFont font(const char *key) { return fonts_get_system_font(key); }
 
 // ── Building sections from rows ───────────────────────────────────────────
@@ -194,7 +221,7 @@ static void text(GContext *ctx, const char *s, const char *font_key, GRect r, GT
 
 static void draw_text_row(GContext *ctx, GRect b, ListWindow *lw, int row, bool hl) {
   const char *left = F(1), *right = F(2), *sub = F(3), *abbr = F(4);
-  int x = ROUND_PAD, w = b.size.w - 2 * ROUND_PAD;
+  int x = s_pad, w = b.size.w - 2 * s_pad;
   if (team_index(abbr) >= 0) {
     draw_logo(ctx, abbr, false, GPoint(x, sub[0] ? 10 : 4));
     x += 26;
@@ -217,7 +244,7 @@ static void draw_text_row(GContext *ctx, GRect b, ListWindow *lw, int row, bool 
 }
 
 static void draw_link_row(GContext *ctx, GRect b, ListWindow *lw, int row, bool hl) {
-  int x = ROUND_PAD, w = b.size.w - 2 * ROUND_PAD;
+  int x = s_pad, w = b.size.w - 2 * s_pad;
   const char *abbr = F(5);
   if (team_index(abbr) >= 0) {
     draw_logo(ctx, abbr, false, GPoint(x, 6));
@@ -233,7 +260,7 @@ static void draw_link_row(GContext *ctx, GRect b, ListWindow *lw, int row, bool 
 }
 
 static void draw_matchup_row(GContext *ctx, GRect b, ListWindow *lw, int row, bool hl) {
-  int x = ROUND_PAD, w = b.size.w - 2 * ROUND_PAD;
+  int x = s_pad, w = b.size.w - 2 * s_pad;
   char state = F(7)[0];
   int as = atoi(F(2)), hs = atoi(F(4));
   for (int i = 0; i < 2; i++) {
@@ -255,7 +282,7 @@ static void draw_matchup_row(GContext *ctx, GRect b, ListWindow *lw, int row, bo
 }
 
 static void draw_team_header(GContext *ctx, GRect b, ListWindow *lw, int row, bool hl) {
-  int x = ROUND_PAD, w = b.size.w - 2 * ROUND_PAD;
+  int x = s_pad, w = b.size.w - 2 * s_pad;
   draw_logo(ctx, F(1), true, GPoint(x, 16));
   x += 42;
   w -= 42;
@@ -271,7 +298,7 @@ static void draw_scoreboard(GContext *ctx, GRect b, ListWindow *lw, int row, boo
     goal_draw(ctx, GRect(0, 0, b.size.w, b.size.h), lw->flash_frame, lw->flash_abbr, lw->flash_line);
     return;
   }
-  int x = ROUND_PAD, w = b.size.w - 2 * ROUND_PAD, cx = b.size.w / 2;
+  int x = s_pad, w = b.size.w - 2 * s_pad, cx = b.size.w / 2;
   char state = F(7)[0];
   const char *away = F(1), *home = F(3);
 
@@ -315,11 +342,12 @@ static void draw_header(GContext *ctx, const Layer *cell, uint16_t section, void
   ListWindow *lw = data;
   if (section >= lw->nsec || !lw->sec[section].title) return;
   GRect b = layer_get_bounds(cell);
+  s_pad = cell_pad(cell, b);
   graphics_context_set_fill_color(ctx, GColorDarkGray);
   graphics_fill_rect(ctx, b, 0, GCornerNone);
   graphics_context_set_text_color(ctx, GColorWhite);
   text(ctx, lw->sec[section].title, FONT_KEY_GOTHIC_14_BOLD,
-       GRect(ROUND_PAD, 2, b.size.w - 2 * ROUND_PAD, 18),
+       GRect(s_pad, 2, b.size.w - 2 * s_pad, 18),
        PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 }
 
@@ -341,6 +369,7 @@ static void draw_row(GContext *ctx, const Layer *cell, MenuIndex *index, void *d
   int row = item_row(lw, index);
   if (row < 0) return;
   GRect b = layer_get_bounds(cell);
+  s_pad = cell_pad(cell, b);
   bool hl = menu_cell_layer_is_highlighted(cell);
   switch (F(0)[0]) {
     case 'T': draw_team_header(ctx, b, lw, row, hl); break;

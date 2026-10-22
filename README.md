@@ -10,6 +10,11 @@ The whole NHL on your Pebble. Follow your team, browse every game, and check the
 <img src="screenshots/emery_game.png" width="180" alt="Game screen">
 <img src="screenshots/emery_standings.png" width="180" alt="Standings">
 </p>
+<p>
+<img src="screenshots/gabbro_home.png" width="180" alt="Home on Pebble Round 2">
+<img src="screenshots/gabbro_games.png" width="180" alt="Today's games on Pebble Round 2">
+<img src="screenshots/gabbro_game.png" width="180" alt="Game screen on Pebble Round 2">
+</p>
 
 ## Features
 
@@ -47,9 +52,10 @@ Emery (Pebble Time 2) and Gabbro (Pebble Round 2).
 Needs Pebble SDK 4.33 or newer.
 
 ```
-pebble build
-pebble install --emulator emery
+./scripts/run_emulator.sh emery    # or gabbro
 ```
+
+That builds the app, installs it in the emulator and opens it. (`pebble install --emulator` on its own installs the app but doesn't open it.)
 
 Or [open it in CloudPebble](https://cloudpebble.repebble.com/ide/import/github/brooks2564/NHL-Live-Scores-APP).
 
