@@ -1,67 +1,59 @@
+<p align="center"><img src="screenshots/banner.png" width="480" alt="NHL Scores"></p>
+
 # NHL Scores 🏒
 
-A Pebble watch **app** for live NHL scores, standings and stats. It's the
-companion to the NHL Live watchface: the watchface shows your team at a
-glance, and this app lets you browse the whole league.
+The whole NHL on your Pebble. Follow your team, browse every game, and check the standings, using the buttons or the touchscreen.
 
-## Screens
+<p>
+<img src="screenshots/emery_home.png" width="180" alt="Home">
+<img src="screenshots/emery_games.png" width="180" alt="Today's games">
+<img src="screenshots/emery_game.png" width="180" alt="Game screen">
+<img src="screenshots/emery_standings.png" width="180" alt="Standings">
+</p>
 
-- **My Team**: your team's page, with today's game, record, division place,
-  next games and recent results
-- **Today's Games**: every game today with live scores. Pick one for details.
-- **Teams**: all 32 teams by division
-- **Standings**: by division, wild card (East and West), conference or league
-- **Playoffs**: series scores for each round
-- **League Leaders**: points, goals, assists, plus/minus and goalie stats
+## Features
 
-The game screen shows the score, period and clock, power plays, shots, goals
-by period with assists, and the goalies.
-
-## Controls
-
-Use the buttons or the touchscreen:
-
-| Action        | Buttons      | Touch        |
-|---------------|--------------|--------------|
-| Scroll        | Up / Down    | Swipe        |
-| Open          | Select       | Tap          |
-| Go back       | Back         | Swipe right  |
-| Make my team  | Hold Select  | (use the "Make ... my team" row) |
-
-Touch uses Pebble's built-in touch navigation. If touch doesn't respond, check
-that touch navigation is turned on in the watch's settings.
+- **My Team**: your team's live score right on the home screen, plus its record, division rank, last 10, next games and recent results
+- **Today's Games**: every game with team logos, scores and period or clock. Open one for the full game screen.
+- **Game screen**: big scoreboard, power plays, shots, goals by period with assists, goalies and playoff series status. It refreshes every 15 seconds while the game is live.
+- **Teams**: all 32 teams grouped by division, each with its own page
+- **Standings**: by division, East and West wild card, conference or whole league, with W-L-OTL records, points and streaks
+- **Playoffs**: series scores for every round
+- **League Leaders**: points, goals, assists, plus/minus, goalie wins, save % and goals against average
 
 ## Goal alerts
 
-While the app is open, the watch vibrates and flashes a goal light when your
-team or any team you follow scores. You can also have the app open itself at
-puck drop for your team's next game.
+While the app is open, you get a vibration and an animated goal light when your team, or any team you follow, scores. The app can also open your team's live game when you launch it, and wake itself at puck drop.
 
-## Settings (in the Pebble phone app)
+## Controls
 
-My team, teams to follow, vibrate on goals, open the live game at launch, and
-open the app at puck drop.
+| Action       | Buttons     | Touch       |
+|--------------|-------------|-------------|
+| Scroll       | Up / Down   | Swipe       |
+| Open         | Select      | Tap         |
+| Back         | Back        | Swipe right |
+| Make it my team | Hold Select on a team | |
+
+## Settings
+
+Open the app's settings in the Pebble phone app to pick your team, choose extra teams to follow, and turn vibration, auto-open and puck-drop wake-up on or off.
 
 ## Platforms
 
-Emery (Pebble Time 2) and Gabbro (Pebble Round 2)
+Emery (Pebble Time 2) and Gabbro (Pebble Round 2).
 
-## Building
+## Build
 
-Needs a recent Pebble SDK (4.33 or newer, for touch navigation):
+Needs Pebble SDK 4.33 or newer.
 
 ```
 pebble build
 pebble install --emulator emery
 ```
 
-## How it works
+Or [open it in CloudPebble](https://cloudpebble.repebble.com/ide/import/github/brooks2564/NHL-Live-Scores-APP).
 
-- `src/pkjs/index.js` runs on the phone. It fetches data from the NHL's free
-  web API (`api-web.nhle.com`) and sends each screen to the watch as simple
-  text rows.
-- `src/c/` is the watch side. Every screen is the same list screen
-  (`list_window.c`), which draws the rows it receives.
+Scores come from the NHL's free public API, so there's no account or key to set up.
 
 ## Author
 
