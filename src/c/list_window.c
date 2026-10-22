@@ -442,8 +442,12 @@ static void select_long_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
     case 'L': abbr = F(5); break;
   }
   if (team_index(abbr) < 0) return;
-  if (strcmp(abbr, g_settings.fav) == 0) list_window_push_team_chooser();
-  else settings_set_favorite(abbr);
+  if (strcmp(abbr, g_settings.fav) == 0) {
+    vibes_short_pulse();   // the same buzz for a button hold and a touch hold
+    list_window_push_team_chooser();
+  } else {
+    settings_set_favorite(abbr);   // buzzes too
+  }
 }
 
 #ifdef PBL_TOUCH
@@ -483,7 +487,6 @@ static void hold_fired(void *ctx) {
   GPoint scrolled = scroll_layer_get_content_offset(menu_layer_get_scroll_layer(lw->menu));
   MenuIndex idx;
   if (!row_at(lw, lw->touch.y - scrolled.y, &idx)) return;
-  vibes_short_pulse();   // there's nothing to feel on a touchscreen, so buzz
   select_long_click(lw->menu, &idx, lw);
 }
 
