@@ -43,7 +43,10 @@ While the app is open, you get a vibration and an animated goal light when your 
 | Scroll       | Up / Down   | Swipe       |
 | Open         | Select      | Tap         |
 | Back         | Back        | Swipe right |
-| Make it my team | Hold Select on a team | |
+| Make it my team | Hold Select on a team | Touch and hold a team |
+| Change my team | Hold Select on your team | Touch and hold your team |
+
+Holding your own team opens a list of all 32 teams to pick from. Your choice is saved on the phone too, so the settings page matches.
 
 ## Settings
 

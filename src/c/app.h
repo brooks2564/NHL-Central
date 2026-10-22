@@ -72,6 +72,7 @@ typedef struct ListWindow ListWindow;
 ListWindow *list_window_push(int req, const char *arg);
 ListWindow *list_window_push_static(const char *data);
 void list_window_set_static(ListWindow *lw, const char *data);
+ListWindow *list_window_push_team_chooser(void);
 const char *static_content(const char *name);
 
 // ── Goal celebration (goal.c) ─────────────────────────────────────────────

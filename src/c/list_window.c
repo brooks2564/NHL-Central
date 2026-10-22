@@ -35,6 +35,13 @@ struct ListWindow {
   int refresh_secs;
   AppTimer *refresh_timer;
 
+  bool pick;               // the "choose your team" list: picking a row sets your team
+
+#ifdef PBL_TOUCH
+  AppTimer *hold_timer;    // touch-and-hold detection
+  GPoint touch;
+#endif
+
   // Game screen goal flash
   int game_id;
   bool has_score;
@@ -406,7 +413,11 @@ static void select_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
       break;
     case 'L': {
       int req = atoi(F(3));
-      if (req == REQ_SET_FAV) settings_set_favorite(F(4));
+      if (req == REQ_SET_FAV) {
+        bool pick = lw->pick;
+        settings_set_favorite(F(4));
+        if (pick) window_stack_pop(true);   // back to where you were
+      }
       else if (req == REQ_STATIC) list_window_push_static(static_content(F(4)));
       else list_window_push(req, F(4));
       break;
@@ -414,9 +425,14 @@ static void select_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
   }
 }
 
-// Hold Select on a team to make it your favorite
+// Hold Select (or touch and hold) on a team. On a team that isn't yours it
+// makes that team yours; on your own team it opens a list to pick another.
 static void select_long_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
   ListWindow *lw = ctx;
+  if (lw->pick) {
+    select_click(menu, index, ctx);
+    return;
+  }
   int row = item_row(lw, index);
   if (row < 0) return;
   const char *abbr = "";
@@ -425,10 +441,100 @@ static void select_long_click(MenuLayer *menu, MenuIndex *index, void *ctx) {
     case 'R': abbr = F(4); break;
     case 'L': abbr = F(5); break;
   }
-  if (team_index(abbr) >= 0) settings_set_favorite(abbr);
+  if (team_index(abbr) < 0) return;
+  if (strcmp(abbr, g_settings.fav) == 0) list_window_push_team_chooser();
+  else settings_set_favorite(abbr);
 }
 
+#ifdef PBL_TOUCH
+// Touch and hold: the system only reports taps and swipes, so watch the raw
+// touch stream for a finger that stays put for HOLD_MS.
+#define HOLD_MS    600
+#define HOLD_SLOP  14   // pixels of movement that turn a hold into a scroll
+
+static ListWindow *s_touch_owner;   // the window currently getting touch events
+
+static void stop_hold(ListWindow *lw) {
+  if (lw->hold_timer) app_timer_cancel(lw->hold_timer);
+  lw->hold_timer = NULL;
+}
+
+// Which row is at this y position, counting from the top of the list
+static bool row_at(ListWindow *lw, int y, MenuIndex *out) {
+  int top = 0;
+  for (int s = 0; s < lw->nsec; s++) {
+    top += get_header_height(lw->menu, s, lw);
+    for (int r = 0; r < lw->sec[s].count; r++) {
+      MenuIndex idx = { .section = s, .row = r };
+      int bottom = top + get_cell_height(lw->menu, &idx, lw);
+      if (y >= top && y < bottom) {
+        *out = idx;
+        return true;
+      }
+      top = bottom;
+    }
+  }
+  return false;
+}
+
+static void hold_fired(void *ctx) {
+  ListWindow *lw = ctx;
+  lw->hold_timer = NULL;
+  GPoint scrolled = scroll_layer_get_content_offset(menu_layer_get_scroll_layer(lw->menu));
+  MenuIndex idx;
+  if (!row_at(lw, lw->touch.y - scrolled.y, &idx)) return;
+  vibes_short_pulse();   // there's nothing to feel on a touchscreen, so buzz
+  select_long_click(lw->menu, &idx, lw);
+}
+
+static void touch_handler(const TouchEvent *event, void *ctx) {
+  ListWindow *lw = ctx;
+  switch (event->type) {
+    case TouchEvent_Touchdown:
+      stop_hold(lw);
+      lw->touch = GPoint(event->x, event->y);
+      lw->hold_timer = app_timer_register(HOLD_MS, hold_fired, lw);
+      break;
+    case TouchEvent_PositionUpdate:
+      if (abs(event->x - lw->touch.x) > HOLD_SLOP || abs(event->y - lw->touch.y) > HOLD_SLOP) {
+        stop_hold(lw);
+      }
+      break;
+    case TouchEvent_Liftoff:
+      stop_hold(lw);
+      break;
+  }
+}
+
+static void touch_start(ListWindow *lw) {
+  s_touch_owner = lw;
+  touch_service_subscribe(touch_handler, lw);
+}
+
+static void touch_stop(ListWindow *lw) {
+  stop_hold(lw);
+  if (s_touch_owner == lw) {   // a newer window may already have taken over
+    touch_service_unsubscribe();
+    s_touch_owner = NULL;
+  }
+}
+#endif
+
 // ── Window lifecycle ──────────────────────────────────────────────────────
+// Start the "choose your team" list on your current team
+static void select_current_team(ListWindow *lw) {
+  for (int sec = 0; sec < lw->nsec; sec++) {
+    for (int i = 0; i < lw->sec[sec].count; i++) {
+      int row = lw->items[lw->sec[sec].start + i];
+      if (strcmp(F(4), g_settings.fav) == 0) {
+        menu_layer_set_selected_index(lw->menu, (MenuIndex) { .section = sec, .row = i },
+                                      MenuRowAlignCenter, false);
+        return;
+      }
+    }
+  }
+}
+
 static void window_load(Window *window) {
   ListWindow *lw = window_get_user_data(window);
   Layer *root = window_get_root_layer(window);
@@ -459,6 +565,7 @@ static void window_load(Window *window) {
 
   if (lw->req == REQ_STATIC) update_view(lw);
   else show_message(lw, "Loading...");
+  if (lw->pick) select_current_team(lw);
 }
 
 static void window_appear(Window *window) {
@@ -466,6 +573,9 @@ static void window_appear(Window *window) {
   lw->visible = true;
   if (lw->req == REQ_GAME) g_viewing_game = lw->game_id;
   if (lw->req != REQ_STATIC) comm_request(lw->req, lw->arg);
+#ifdef PBL_TOUCH
+  touch_start(lw);
+#endif
 }
 
 static void window_disappear(Window *window) {
@@ -474,12 +584,18 @@ static void window_disappear(Window *window) {
   if (lw->req == REQ_GAME && g_viewing_game == lw->game_id) g_viewing_game = 0;
   schedule_refresh(lw, 0);
   stop_flash(lw);
+#ifdef PBL_TOUCH
+  touch_stop(lw);
+#endif
 }
 
 static void window_unload(Window *window) {
   ListWindow *lw = window_get_user_data(window);
   comm_unlisten(lw->listener);
   stop_flash(lw);
+#ifdef PBL_TOUCH
+  touch_stop(lw);
+#endif
   if (lw->refresh_timer) app_timer_cancel(lw->refresh_timer);
   text_layer_destroy(lw->msg);
   menu_layer_destroy(lw->menu);
@@ -527,6 +643,30 @@ ListWindow *list_window_push_static(const char *data) {
   ListWindow *lw = create(REQ_STATIC, "");
   if (!lw) return NULL;
   table_parse(lw->table, data);
+  rebuild(lw);
+  window_stack_push(lw->window, true);
+  return lw;
+}
+
+// "Choose your team": every team by division, picking one makes it your team
+ListWindow *list_window_push_team_chooser(void) {
+  static char s_data[1900];
+  static const char DIVS[] = "AMCP";
+  static const char *DIV_NAMES[] = {"Atlantic", "Metropolitan", "Central", "Pacific"};
+  int n = 0;
+  for (int d = 0; d < 4; d++) {
+    n += snprintf(s_data + n, sizeof(s_data) - n, "#|%s\n", DIV_NAMES[d]);
+    for (int i = 0; i < NUM_TEAMS && n < (int)sizeof(s_data); i++) {
+      if (TEAMS[i].div != DIVS[d]) continue;
+      n += snprintf(s_data + n, sizeof(s_data) - n, "L|%s|%s|%d|%s|%s\n", TEAMS[i].name,
+                    strcmp(TEAMS[i].abbr, g_settings.fav) == 0 ? "Your team" : "",
+                    REQ_SET_FAV, TEAMS[i].abbr, TEAMS[i].abbr);
+    }
+  }
+  ListWindow *lw = create(REQ_STATIC, "");
+  if (!lw) return NULL;
+  lw->pick = true;
+  table_parse(lw->table, s_data);
   rebuild(lw);
   window_stack_push(lw->window, true);
   return lw;
