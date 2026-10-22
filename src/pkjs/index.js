@@ -23,7 +23,8 @@ var TEAMS = {
 var DIVISIONS = { A: "Atlantic", M: "Metropolitan", C: "Central", P: "Pacific" };
 
 // ── Settings ──────────────────────────────────────────────────────────────
-var DEFAULT_SETTINGS = { fav: "TOR", follow: [], vibrate: true, autoOpen: true, wake: true };
+var DEFAULT_SETTINGS = { fav: "TOR", follow: [], vibrate: true, autoOpen: true, wake: true,
+                         timeline: true };
 
 function loadSettings() {
   var s = {};
@@ -568,10 +569,86 @@ function sendSettings() {
   });
 }
 
+// ── Timeline pins ─────────────────────────────────────────────────────────
+// Pins your team's next few games to the Pebble timeline. The phone makes the
+// pins itself (no server needed) and refreshes them whenever the app opens.
+var PIN_COUNT = 5;
+
+function loadPinIds() {
+  try { return JSON.parse(localStorage.getItem("pinIds")) || []; } catch (e) { return []; }
+}
+
+// Delete every pin we added earlier, except the ones in `keep`
+function removePins(keep) {
+  loadPinIds().forEach(function (id) {
+    if (!keep || !keep[id]) Pebble.deleteTimelinePin(id);
+  });
+}
+
+function buildPin(g, standings) {
+  var a = g.awayTeam || {}, h = g.homeTeam || {};
+  var as = findTeam(standings, a.abbrev), hs = findTeam(standings, h.abbrev);
+  var kind = g.gameType === 3 ? "Playoff game" : g.gameType === 1 ? "Preseason game" : "Regular season game";
+  var layout = {
+    type: "sportsPin",
+    title: (TEAMS[a.abbrev] || a.abbrev) + " at " + (TEAMS[h.abbrev] || h.abbrev),
+    subtitle: formatTime(g.startTimeUTC),
+    body: kind + (g.venue ? " at " + name(g.venue) : "") + ".",
+    tinyIcon: "system://images/HOCKEY_GAME",
+    largeIcon: "system://images/HOCKEY_GAME",
+    lastUpdated: new Date().toISOString(),
+    nameAway: a.abbrev,
+    nameHome: h.abbrev,
+    sportsGameState: "pre-game"
+  };
+  if (as && hs) {
+    layout.recordAway = record(as);
+    layout.recordHome = record(hs);
+  }
+  return { id: "nhl-" + g.id, time: g.startTimeUTC, duration: 180, layout: layout };
+}
+
+function syncPins() {
+  if (typeof Pebble.insertTimelinePin !== "function") {
+    console.log("[NHL] timeline pins aren't supported here");
+    return;
+  }
+  if (!gSettings.timeline) {
+    removePins(null);
+    localStorage.setItem("pinIds", "[]");
+    return;
+  }
+  getStandings(function (err, standings) {
+    getJSON("club-schedule-season/" + gSettings.fav + "/now", 600, function (err2, sched) {
+      if (err2 || !sched) {   // can't reach the NHL: leave the pins as they are
+        console.log("[NHL] timeline pins skipped: " + err2);
+        return;
+      }
+      var now = Date.now(), keep = {};
+      (sched.games || []).forEach(function (g) {
+        if (Object.keys(keep).length >= PIN_COUNT) return;
+        if (gameState(g) !== "P" || g.gameScheduleState === "PPD") return;
+        if (new Date(g.startTimeUTC).getTime() <= now) return;
+        var pin = buildPin(g, standings || []);
+        keep[pin.id] = true;
+        try {
+          Pebble.insertTimelinePin(pin);
+        } catch (e) {
+          console.log("[NHL] couldn't add pin " + pin.id + ": " + e);
+        }
+      });
+      removePins(keep);
+      localStorage.setItem("pinIds", JSON.stringify(Object.keys(keep)));
+      console.log("[NHL] timeline pins: " + Object.keys(keep).join(", "));
+    });
+  });
+}
+
 // ── Events ────────────────────────────────────────────────────────────────
 Pebble.addEventListener("ready", function () {
   console.log("[NHL] ready, favorite " + gSettings.fav);
   sendSettings();
+  syncPins();
 });
 
 Pebble.addEventListener("appmessage", function (e) {
@@ -591,6 +668,7 @@ Pebble.addEventListener("appmessage", function (e) {
         gSettings.fav = arg;
         saveSettings(gSettings);
         sendSettings();
+        syncPins();
       }
       break;
   }
@@ -627,6 +705,9 @@ function settingsPage() {
     toggle("vibrate", "Vibrate on goals", gSettings.vibrate) +
     toggle("autoOpen", "Open my team's live game at launch", gSettings.autoOpen) +
     toggle("wake", "Open the app at puck drop", gSettings.wake) +
+    "<h2>Timeline</h2>" +
+    toggle("timeline", "Add my team's next games to the timeline", gSettings.timeline) +
+    "<p>Pins your team's next 5 games to your Pebble timeline. They refresh whenever you open the app, and turning this off removes them.</p>" +
     "<h2>Also follow</h2><p>Get goal alerts for these teams too, while the app is open.</p>" +
     "<div class='grid'>" + checks + "</div>" +
     "<button id='save'>Save</button>" +
@@ -636,7 +717,8 @@ function settingsPage() {
     "var s={fav:document.getElementById('fav').value,follow:f," +
     "vibrate:document.getElementById('vibrate').checked," +
     "autoOpen:document.getElementById('autoOpen').checked," +
-    "wake:document.getElementById('wake').checked};" +
+    "wake:document.getElementById('wake').checked," +
+    "timeline:document.getElementById('timeline').checked};" +
     "location.href='pebblejs://close#'+encodeURIComponent(JSON.stringify(s));};</script>" +
     "</body></html>";
 }
@@ -654,8 +736,10 @@ Pebble.addEventListener("webviewclosed", function (e) {
     gSettings.vibrate = !!s.vibrate;
     gSettings.autoOpen = !!s.autoOpen;
     gSettings.wake = !!s.wake;
+    gSettings.timeline = !!s.timeline;
     saveSettings(gSettings);
     sendSettings();
+    syncPins();
   } catch (ex) {
     console.log("[NHL] settings error: " + ex);
   }

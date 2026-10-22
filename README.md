@@ -30,6 +30,7 @@ The whole NHL on your Pebble. Follow your team, browse every game, and check the
 - **Standings**: by division, East and West wild card, conference or whole league, with W-L-OTL records, points and streaks
 - **Playoffs**: series scores for every round
 - **League Leaders**: points, goals, assists, plus/minus, goalie wins, save % and goals against average
+- **Timeline pins**: your team's next 5 games show up in your Pebble timeline, with both records and the puck-drop time. You can turn this off in settings.
 
 ## Goal alerts
 
@@ -46,7 +47,7 @@ While the app is open, you get a vibration and an animated goal light when your 
 
 ## Settings
 
-Open the app's settings in the Pebble phone app to pick your team, choose extra teams to follow, and turn vibration, auto-open and puck-drop wake-up on or off.
+Open the app's settings in the Pebble phone app to pick your team, choose extra teams to follow, and turn vibration, auto-open, puck-drop wake-up and timeline pins on or off.
 
 ## Platforms
 
