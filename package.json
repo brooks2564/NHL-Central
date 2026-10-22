@@ -1,0 +1,430 @@
+{
+  "name": "nhl-live-scores-app",
+  "author": "Brooman Inks",
+  "version": "1.0.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "NHL Scores",
+    "shortName": "NHL Scores",
+    "longName": "NHL Live Scores App",
+    "uuid": "1f6cd21a-e582-4e11-b729-3839127a9549",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery",
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "capabilities": [
+      "configurable"
+    ],
+    "messageKeys": {
+      "REQ": 1,
+      "ARG": 2,
+      "TYPE": 3,
+      "DATA": 4,
+      "FAV_TEAM": 5,
+      "FOLLOW": 6,
+      "VIBRATE": 7,
+      "AUTO_OPEN": 8,
+      "WAKE_TIME": 9,
+      "ERROR": 10
+    },
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "file": "images/menu_icon.png",
+          "menuIcon": true
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_0",
+          "file": "images/goal_0.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_1",
+          "file": "images/goal_1.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_2",
+          "file": "images/goal_2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_3",
+          "file": "images/goal_3.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_4",
+          "file": "images/goal_4.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_5",
+          "file": "images/goal_5.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_6",
+          "file": "images/goal_6.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_7",
+          "file": "images/goal_7.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_8",
+          "file": "images/goal_8.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_9",
+          "file": "images/goal_9.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_10",
+          "file": "images/goal_10.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_GOAL_11",
+          "file": "images/goal_11.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_ANA_LG",
+          "file": "images/logos/ANA_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_ANA_SM",
+          "file": "images/logos/ANA_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_BOS_LG",
+          "file": "images/logos/BOS_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_BOS_SM",
+          "file": "images/logos/BOS_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_BUF_LG",
+          "file": "images/logos/BUF_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_BUF_SM",
+          "file": "images/logos/BUF_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CAR_LG",
+          "file": "images/logos/CAR_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CAR_SM",
+          "file": "images/logos/CAR_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CBJ_LG",
+          "file": "images/logos/CBJ_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CBJ_SM",
+          "file": "images/logos/CBJ_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CGY_LG",
+          "file": "images/logos/CGY_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CGY_SM",
+          "file": "images/logos/CGY_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CHI_LG",
+          "file": "images/logos/CHI_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_CHI_SM",
+          "file": "images/logos/CHI_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_COL_LG",
+          "file": "images/logos/COL_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_COL_SM",
+          "file": "images/logos/COL_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_DAL_LG",
+          "file": "images/logos/DAL_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_DAL_SM",
+          "file": "images/logos/DAL_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_DET_LG",
+          "file": "images/logos/DET_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_DET_SM",
+          "file": "images/logos/DET_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_EDM_LG",
+          "file": "images/logos/EDM_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_EDM_SM",
+          "file": "images/logos/EDM_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_FLA_LG",
+          "file": "images/logos/FLA_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_FLA_SM",
+          "file": "images/logos/FLA_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_LAK_LG",
+          "file": "images/logos/LAK_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_LAK_SM",
+          "file": "images/logos/LAK_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_MIN_LG",
+          "file": "images/logos/MIN_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_MIN_SM",
+          "file": "images/logos/MIN_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_MTL_LG",
+          "file": "images/logos/MTL_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_MTL_SM",
+          "file": "images/logos/MTL_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NJD_LG",
+          "file": "images/logos/NJD_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NJD_SM",
+          "file": "images/logos/NJD_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NSH_LG",
+          "file": "images/logos/NSH_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NSH_SM",
+          "file": "images/logos/NSH_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NYI_LG",
+          "file": "images/logos/NYI_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NYI_SM",
+          "file": "images/logos/NYI_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NYR_LG",
+          "file": "images/logos/NYR_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_NYR_SM",
+          "file": "images/logos/NYR_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_OTT_LG",
+          "file": "images/logos/OTT_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_OTT_SM",
+          "file": "images/logos/OTT_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_PHI_LG",
+          "file": "images/logos/PHI_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_PHI_SM",
+          "file": "images/logos/PHI_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_PIT_LG",
+          "file": "images/logos/PIT_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_PIT_SM",
+          "file": "images/logos/PIT_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_SEA_LG",
+          "file": "images/logos/SEA_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_SEA_SM",
+          "file": "images/logos/SEA_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_SJS_LG",
+          "file": "images/logos/SJS_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_SJS_SM",
+          "file": "images/logos/SJS_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_STL_LG",
+          "file": "images/logos/STL_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_STL_SM",
+          "file": "images/logos/STL_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_TBL_LG",
+          "file": "images/logos/TBL_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_TBL_SM",
+          "file": "images/logos/TBL_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_TOR_LG",
+          "file": "images/logos/TOR_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_TOR_SM",
+          "file": "images/logos/TOR_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_UTA_LG",
+          "file": "images/logos/UTA_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_UTA_SM",
+          "file": "images/logos/UTA_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_VAN_LG",
+          "file": "images/logos/VAN_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_VAN_SM",
+          "file": "images/logos/VAN_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_VGK_LG",
+          "file": "images/logos/VGK_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_VGK_SM",
+          "file": "images/logos/VGK_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_WSH_LG",
+          "file": "images/logos/WSH_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_WSH_SM",
+          "file": "images/logos/WSH_SM.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_WPG_LG",
+          "file": "images/logos/WPG_LG.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "LOGO_WPG_SM",
+          "file": "images/logos/WPG_SM.png"
+        }
+      ]
+    }
+  }
+}
