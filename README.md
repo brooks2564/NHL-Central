@@ -5,16 +5,21 @@
 The whole NHL on your Pebble. Follow your team, browse every game, and check the standings, using the buttons or the touchscreen.
 
 <p>
-<img src="screenshots/emery_home.png" width="180" alt="Home">
-<img src="screenshots/emery_games.png" width="180" alt="Today's games">
-<img src="screenshots/emery_game.png" width="180" alt="Game screen">
-<img src="screenshots/emery_standings.png" width="180" alt="Standings">
+<img src="screenshots/emery/01_home.png" width="150" alt="Home">
+<img src="screenshots/emery/02_todays_games.png" width="150" alt="Today's games">
+<img src="screenshots/emery/03_game_scoreboard.png" width="150" alt="Game screen">
+<img src="screenshots/emery/10_goal_popup.png" width="150" alt="Goal alert">
+<img src="screenshots/emery/09_standings_division.png" width="150" alt="Standings">
 </p>
 <p>
-<img src="screenshots/gabbro_home.png" width="180" alt="Home on Pebble Round 2">
-<img src="screenshots/gabbro_games.png" width="180" alt="Today's games on Pebble Round 2">
-<img src="screenshots/gabbro_game.png" width="180" alt="Game screen on Pebble Round 2">
+<img src="screenshots/gabbro/01_home.png" width="150" alt="Home on Pebble Round 2">
+<img src="screenshots/gabbro/02_todays_games.png" width="150" alt="Today's games on Pebble Round 2">
+<img src="screenshots/gabbro/03_game_scoreboard.png" width="150" alt="Game screen on Pebble Round 2">
+<img src="screenshots/gabbro/10_goal_popup.png" width="150" alt="Goal alert on Pebble Round 2">
+<img src="screenshots/gabbro/09_standings_division.png" width="150" alt="Standings on Pebble Round 2">
 </p>
+
+<sub>Screenshots are from a replay of a real game: Capitals 5, Penguins 3 on Oct 7, 2026. Emery on top, Gabbro below. More are in <code>screenshots/emery</code> and <code>screenshots/gabbro</code>.</sub>
 
 ## Features
 
