@@ -1,4 +1,4 @@
-// ── NHL Scores - PebbleKit JS ─────────────────────────────────────────────
+// ── NHL Central - PebbleKit JS ─────────────────────────────────────────────
 // Fetches data from the NHL's free web API and sends each screen to the
 // watch as text rows: rows separated by "\n", fields separated by "|".
 // See the row formats at the top of src/c/list_window.c.
@@ -691,7 +691,7 @@ function settingsPage() {
   }
   return "<!DOCTYPE html><html><head><meta charset='utf-8'>" +
     "<meta name='viewport' content='width=device-width,initial-scale=1'>" +
-    "<title>NHL Scores</title><style>" +
+    "<title>NHL Central</title><style>" +
     "body{font-family:-apple-system,sans-serif;background:#111;color:#eee;margin:0;padding:16px}" +
     "h1{font-size:22px}h2{font-size:16px;color:#9ab;margin-top:24px}" +
     "select,button{width:100%;font-size:17px;padding:10px;border-radius:8px}" +
@@ -699,7 +699,7 @@ function settingsPage() {
     ".row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #333}" +
     ".grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.team{padding:6px 0}" +
     "p{color:#999;font-size:14px}" +
-    "</style></head><body><h1>NHL Scores</h1>" +
+    "</style></head><body><h1>NHL Central</h1>" +
     "<h2>My Team</h2><select id='fav'>" + opts + "</select>" +
     "<h2>Alerts</h2>" +
     toggle("vibrate", "Vibrate on goals", gSettings.vibrate) +

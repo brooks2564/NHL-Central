@@ -22,4 +22,4 @@ from libpebble2.protocol.apps import AppRunState, AppRunStateStart
 pebble.send_packet(AppRunState(data=AppRunStateStart(uuid=UUID('$UUID'))))
 EOF
 
-echo "Opened NHL Scores on the $PLATFORM emulator."
+echo "Opened NHL Central on the $PLATFORM emulator."

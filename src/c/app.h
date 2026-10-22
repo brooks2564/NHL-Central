@@ -1,4 +1,4 @@
-// ── NHL Scores · shared definitions ────────────────────────────────────────
+// ── NHL Central · shared definitions ────────────────────────────────────────
 #pragma once
 #include <pebble.h>
 

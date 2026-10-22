@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draw the NHL Scores app icons and banner.
+"""Draw the NHL Central app icons and banner.
 
 Writes:
   resources/images/menu_icon.png     25x25 launcher icon (1-bit, white on black)
@@ -96,9 +96,13 @@ def draw_banner():
 
     x = 312
     d.text((x, 22), "NHL", font=font(124), fill=WHITE)
-    d.text((x, 138), "Scores", font=font(96), fill=SKY)
+    title = "Central"
+    tsize = 96
+    while d.textlength(title, font=font(tsize)) > w - x - 24:
+        tsize -= 1
+    d.text((x, 138), title, font=font(tsize), fill=SKY)
     d.rectangle((x + 4, 256, x + 4 + 64, 261), fill=RED)
-    tagline = "Standings | Teams | Playoffs"
+    tagline = "Scores | Standings | Playoffs"
     size = 26
     while d.textlength(tagline, font=font(size)) > w - x - 24:
         size -= 1

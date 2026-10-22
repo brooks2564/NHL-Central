@@ -1,5 +1,5 @@
 {
-  "name": "nhl-live-scores-app",
+  "name": "nhl-central",
   "author": "Brooman Inks",
   "version": "1.0.0",
   "keywords": [
@@ -8,9 +8,9 @@
   "private": true,
   "dependencies": {},
   "pebble": {
-    "displayName": "NHL Scores",
-    "shortName": "NHL Scores",
-    "longName": "NHL Live Scores App",
+    "displayName": "NHL Central",
+    "shortName": "NHL Central",
+    "longName": "NHL Central",
     "uuid": "1f6cd21a-e582-4e11-b729-3839127a9549",
     "sdkVersion": "3",
     "enableMultiJS": true,

@@ -1,4 +1,4 @@
-// ── NHL Scores · watch app ────────────────────────────────────────────────
+// ── NHL Central · watch app ────────────────────────────────────────────────
 #include "app.h"
 
 #define PERSIST_SETTINGS  1
@@ -24,7 +24,7 @@ static void build_home(void) {
   tracker_fav_game(&status, &live);
   int i = team_index(g_settings.fav);
   snprintf(s_data, sizeof(s_data),
-    "#|NHL Scores\n"
+    "#|NHL Central\n"
     "L|%s|%s|4|%s|%s\n"
     "L|Today's Games||1||\n"
     "L|Teams||0|teams|\n"

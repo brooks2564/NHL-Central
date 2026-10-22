@@ -1,6 +1,6 @@
-<p align="center"><img src="screenshots/banner.png" width="480" alt="NHL Scores"></p>
+<p align="center"><img src="screenshots/banner.png" width="480" alt="NHL Central"></p>
 
-# NHL Scores 🏒
+# NHL Central 🏒
 
 The whole NHL on your Pebble. Follow your team, browse every game, and check the standings, using the buttons or the touchscreen.
 
